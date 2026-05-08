@@ -38,7 +38,7 @@ import { CalClient } from './client.js';
 import { TOOLS } from './tools/index.js';
 
 const SERVER_NAME = 'cal-mcp-server';
-const SERVER_VERSION = '0.1.0';
+const SERVER_VERSION = '0.1.1';
 
 const DEFAULT_BASE_URL = 'https://vault.homeloanexpress.ai';
 

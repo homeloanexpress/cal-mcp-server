@@ -77,18 +77,37 @@ npm run build
 
 ## Getting a token
 
-`CAL_API_TOKEN` is a bearer token from `https://vault.homeloanexpress.ai/auth/login`. v0.1 uses Cal's existing session tokens; v0.2 will move to OAuth 2.1 with PKCE so MCP clients can run the consent flow themselves.
+`CAL_API_TOKEN` is an opaque bearer token. **Use a long‑lived API key, not a session token** — session tokens from `/auth/login` expire after 8 hours, which means an MCP client config that worked today returns 401 tomorrow.
 
-For the launch demo, sign up at [vault.homeloanexpress.ai](https://vault.homeloanexpress.ai) (request access if you don't have a key yet — broker LOs are auto‑approved). Then:
+### Recommended — long‑lived API key (`cal_live_…`)
+
+Sign up at [vault.homeloanexpress.ai](https://vault.homeloanexpress.ai) (request access if you don't have a key yet — broker LOs are auto‑approved). Then:
 
 ```bash
-curl -X POST https://vault.homeloanexpress.ai/auth/login \
+# 1. Get a short‑lived session token from /auth/login
+SESSION=$(curl -s -X POST https://vault.homeloanexpress.ai/auth/login \
   -H "Content-Type: application/json" \
   -H "Origin: https://homeloanexpress.ai" \
-  -d '{"email":"<your-email>","password":"<your-password>","portal":"team"}'
+  -d '{"email":"<your-email>","password":"<your-password>","portal":"team"}' \
+  | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
+
+# 2. Mint a long‑lived API key
+curl -X POST https://vault.homeloanexpress.ai/auth/api-keys \
+  -H "Content-Type: application/json" \
+  -H "Origin: https://homeloanexpress.ai" \
+  -H "Authorization: Bearer $SESSION" \
+  -d '{"label":"my-claude-desktop"}'
 ```
 
-Use the `token` field from the response as `CAL_API_TOKEN`.
+The response includes a `key` field starting with `cal_live_`. **Copy it now — it's only shown once.** Use it as `CAL_API_TOKEN`. The key has no expiry; revoke it any time with `DELETE /auth/api-keys/<id>` (list yours with `GET /auth/api-keys`).
+
+### Fallback — session token
+
+If you just want to try a tool call quickly, the session token from `/auth/login` works too (8‑hour TTL). Don't put one in a long‑lived MCP config.
+
+### v0.2 preview
+
+OAuth 2.1 with PKCE is on the v0.2 roadmap so MCP clients can run the consent flow themselves. Until then, the API key flow above is the recommended path.
 
 ## Verify it works
 

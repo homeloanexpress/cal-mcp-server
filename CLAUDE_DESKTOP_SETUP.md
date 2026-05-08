@@ -1,17 +1,33 @@
 # Setting up cal-mcp-server in Claude Desktop
 
-This is the 90-second install path. Pre-publish (before npm), use the local-build instructions; after npm publish, switch to the npx version in the README.
+> **Important note (May 2026):** Claude Desktop has moved to a DXT extension system. The legacy `mcpServers` JSON path described below still works for **Cursor, Continue, Goose, Zed, Cody, Claude Code CLI, and other MCP clients**, but **modern Claude Desktop tends to overwrite manual edits to `claude_desktop_config.json` on relaunch**.
+>
+> A `.dxt` Claude Desktop bundle is on the v0.1.2 roadmap. Until it ships, the most reliable Claude Desktop install paths are:
+> 1. Use the in-app **Settings → Extensions → Install from file** flow (when we publish the .dxt)
+> 2. Use a different MCP client that respects manual config (Cursor, Continue, Claude Code CLI)
+> 3. Manually edit the legacy config path below and accept that you may need to redo it after a Claude Desktop update
 
-## 1. Get a Cal API token
+The instructions below cover the manual / legacy path.
+
+---
+
+## 1. Get a long-lived API key (recommended)
 
 ```bash
-curl -X POST https://vault.homeloanexpress.ai/auth/login \
+SESSION=$(curl -s -X POST https://vault.homeloanexpress.ai/auth/login \
   -H "Content-Type: application/json" \
   -H "Origin: https://homeloanexpress.ai" \
-  -d '{"email":"<your-email>","password":"<your-password>","portal":"team"}'
+  -d '{"email":"<your-email>","password":"<your-password>","portal":"team"}' \
+  | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
+
+curl -X POST https://vault.homeloanexpress.ai/auth/api-keys \
+  -H "Content-Type: application/json" \
+  -H "Origin: https://homeloanexpress.ai" \
+  -H "Authorization: Bearer $SESSION" \
+  -d '{"label":"my-claude-desktop"}'
 ```
 
-The response includes `"token":"<uuid>"`. Copy it. Tokens last 24 hours by default — refresh when expired.
+The response includes a `key` field starting with `cal_live_`. **Copy it now — it is shown only once.** It has no expiry; revoke any time with `DELETE /auth/api-keys/<id>`.
 
 ## 2. Edit Claude Desktop's config
 
@@ -33,7 +49,7 @@ Add a `mcpServers` block (or merge into the existing one):
         "/absolute/path/to/cal-mcp-server/dist/index.js"
       ],
       "env": {
-        "CAL_API_TOKEN": "your-token-from-step-1"
+        "CAL_API_TOKEN": "cal_live_...your-key-here..."
       }
     }
   }
@@ -49,7 +65,7 @@ After npm publish, switch to:
       "command": "npx",
       "args": ["-y", "@homeloanexpress/cal-mcp-server"],
       "env": {
-        "CAL_API_TOKEN": "your-token-from-step-1"
+        "CAL_API_TOKEN": "cal_live_...your-key-here..."
       }
     }
   }
@@ -60,6 +76,8 @@ After npm publish, switch to:
 
 Quit (cmd-Q), reopen. The `cal` tools should appear when you click the slash-menu / hammer icon in the chat composer.
 
+If they don't appear after restart and your config edit was reverted, you've hit the DXT-overwrite problem. Use Cursor or another MCP client until the v0.1.2 .dxt ships.
+
 ## 4. Try it
 
 Ask: *"What's the 2026 conforming loan limit in Alameda County CA?"*
@@ -69,7 +87,14 @@ Claude will call `cal_fact_lookup` and respond with the FHFA $1,229,100 number p
 tail -f "$HOME/Library/Logs/Claude/mcp*.log"
 ```
 
-The most common failure is the token having expired. Re-run step 1, paste the new token, restart.
+The most common failure modes:
+
+| Error | Fix |
+|---|---|
+| `401 unauthorized` from cal API | Token expired (used session token instead of API key), or key revoked. Mint a new API key. |
+| `cal` server doesn't appear in Claude Desktop | Config edit got overwritten. See note at top of this file. |
+| `MCP SDK error` on launch | Node version too old. cal-mcp-server requires Node ≥ 18. |
+| `Cannot find module @modelcontextprotocol/sdk` | Run `npm install` in the cal-mcp-server directory. |
 
 ## 5. Harder demo
 
