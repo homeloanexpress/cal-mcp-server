@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "cal": {
+      "command": "npx",
+      "args": ["-y", "@homeloanexpress/cal-mcp-server"],
+      "env": {
+        "CAL_API_TOKEN": "REPLACE_WITH_YOUR_TOKEN"
+      }
+    }
+  }
+}

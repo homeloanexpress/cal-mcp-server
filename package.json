@@ -1,0 +1,61 @@
+{
+  "name": "@homeloanexpress/cal-mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server for Cal — the AI mortgage platform from HomeLoanExpress. Exposes the Cal lender library, DPA programs, lender intel, and authoritative loan-limit / fee facts to any MCP-compatible client (Claude Desktop, Cursor, Continue, Goose, Zed). First mortgage MCP server with a real lender data moat: 166+ lenders, 1,400+ indexed documents, 250+ DPA programs, all 50 states.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "cal-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "smoke": "node scripts/smoke.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "modelcontextprotocol",
+    "model-context-protocol",
+    "claude",
+    "claude-desktop",
+    "mortgage",
+    "home-loans",
+    "lender",
+    "lending",
+    "real-estate",
+    "fha",
+    "va",
+    "fannie-mae",
+    "freddie-mac",
+    "dpa",
+    "homeloanexpress",
+    "cal"
+  ],
+  "homepage": "https://vault.homeloanexpress.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/homeloanexpress/cal-mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/homeloanexpress/cal-mcp-server/issues"
+  },
+  "author": "Chris Black <chris@homeloanexpress.ai> (https://homeloanexpress.ai)",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "typescript": "^5.6.3"
+  }
+}
