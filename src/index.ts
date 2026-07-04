@@ -1,26 +1,26 @@
 #!/usr/bin/env node
 /**
  * cal-mcp-server — Model Context Protocol server for Cal, the AI mortgage
- * platform from HomeLoanExpress.
+ * platform at askcal.io.
  *
  * Connects MCP-compatible clients (Claude Desktop, Cursor, Continue, Goose,
- * Zed, Cody, …) to Cal's lender library, DPA programs, lender intel, and
- * authoritative loan-limit / fee facts.  v0.1 ships seven tools mirroring
- * Cal's internal tool-use schema.  v0.2 adds OAuth 2.1 PKCE; v0.1 uses a
- * long-lived bearer token in `CAL_API_TOKEN`.
+ * Zed, Cody, …) to Cal's lender library, DPA programs, lender intel, ValueGuard
+ * valuations, and authoritative loan-limit / fee facts.  Ships eight tools
+ * mirroring Cal's internal tool-use schema.  A later release adds OAuth 2.1
+ * PKCE; today it uses a long-lived bearer token in `CAL_API_TOKEN`.
  *
  * Transport: stdio.  All MCP clients support stdio; HTTP transport will be
  * added in a later release.
  *
  * Usage:
- *   CAL_API_TOKEN=<token> npx @homeloanexpress/cal-mcp-server
+ *   CAL_API_TOKEN=<token> npx @askcal/mcp-server
  *
  * Or, in Claude Desktop's claude_desktop_config.json:
  *   {
  *     "mcpServers": {
  *       "cal": {
  *         "command": "npx",
- *         "args": ["-y", "@homeloanexpress/cal-mcp-server"],
+ *         "args": ["-y", "@askcal/mcp-server"],
  *         "env": { "CAL_API_TOKEN": "<token>" }
  *       }
  *     }
@@ -38,9 +38,9 @@ import { CalClient } from './client.js';
 import { TOOLS } from './tools/index.js';
 
 const SERVER_NAME = 'cal-mcp-server';
-const SERVER_VERSION = '0.1.1';
+const SERVER_VERSION = '0.2.0';
 
-const DEFAULT_BASE_URL = 'https://vault.homeloanexpress.ai';
+const DEFAULT_BASE_URL = 'https://api.askcal.io';
 
 function loadConfig() {
   const baseUrl = process.env.CAL_API_BASE_URL || DEFAULT_BASE_URL;
@@ -51,11 +51,12 @@ function loadConfig() {
         '',
         '  cal-mcp-server: missing CAL_API_TOKEN.',
         '',
-        '  Get one by logging in at https://vault.homeloanexpress.ai',
-        '  and copying your bearer token.  Then set it in your MCP client',
-        '  config:',
+        '  Set your Cal API key so the server can reach the Cal API:',
         '',
-        '    "env": { "CAL_API_TOKEN": "<token>" }',
+        '    "env": { "CAL_API_TOKEN": "cal_live_..." }',
+        '',
+        '  Need a key?  Start a free Cal trial at https://askcal.io and open',
+        '  your API keys, then set CAL_API_TOKEN above',
         '',
       ].join('\n')
     );

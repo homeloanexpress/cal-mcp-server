@@ -2,7 +2,7 @@
 
 > The mortgage MCP server, with a real lender data moat. **166+ wholesale lenders · 1,400+ indexed program documents · 250+ down‑payment‑assistance programs · 50 states.** First Model Context Protocol server in the mortgage industry with broker‑accessible matrix data behind it — not a calculator, not a rate scraper.
 
-`@homeloanexpress/cal-mcp-server` exposes Cal — the AI mortgage platform from [HomeLoanExpress](https://homeloanexpress.ai) — to any [Model Context Protocol](https://modelcontextprotocol.io) client: Claude Desktop, Cursor, Continue, Goose, Zed, Cody, your own agent. Loan officers, brokers, real‑estate agents, and consumer borrowers can ask their AI assistant questions like:
+`@askcal/mcp-server` exposes Cal — the AI mortgage platform at [askcal.io](https://askcal.io) — to any [Model Context Protocol](https://modelcontextprotocol.io) client: Claude Desktop, Cursor, Continue, Goose, Zed, Cody, your own agent. Loan officers, brokers, real‑estate agents, and consumer borrowers can ask their AI assistant questions like:
 
 - *"What's the 2026 conforming loan limit in Alameda County, CA, for a 1‑unit?"*
 - *"Top 5 wholesale jumbo lenders in California for a 712‑FICO, 80% LTV, $1.4M loan with a departing residence still listed."*
@@ -20,7 +20,7 @@ If you're an LO, this means asking Claude (or Cursor, or your own agent) the sam
 
 ## Tools
 
-The server exposes seven tools:
+The server exposes eight tools:
 
 | Name | Purpose |
 |---|---|
@@ -31,6 +31,7 @@ The server exposes seven tools:
 | `cal_dpa_search` | Down‑payment‑assistance programs by state / county / city / FTHB / type. Up to 25 ranked programs with provider URLs. |
 | `cal_lender_intel` | Tribal‑knowledge intel — strengths, watch‑outs, speed notes, scenarios they love, scenarios to avoid, AE contacts. Pass `intent` to narrow. |
 | `cal_scenario_pattern` | Structuring playbooks for hard scenarios: departing residence, ITIN / foreign national, sub‑580 FHA, renovation, super‑jumbo, plus the matrix‑freshness citation rule. |
+| `cal_valuation` | ValueGuard comparable-sales valuation. Pass the subject (price + sqft) and 4+ comps, get the indicated market value, a floor/ceiling range, an over/under-priced verdict, a confidence level, and the comps used. A list-price rebuttal in seconds. |
 
 The tool surface mirrors Cal's internal tool‑use schema, so any model (Claude Sonnet, Opus, Haiku, GPT‑4o, Gemini, …) that calls them gets the same shape Cal itself uses.
 
@@ -45,7 +46,7 @@ Add this to `~/Library/Application Support/Claude/claude_desktop_config.json` (m
   "mcpServers": {
     "cal": {
       "command": "npx",
-      "args": ["-y", "@homeloanexpress/cal-mcp-server"],
+      "args": ["-y", "@askcal/mcp-server"],
       "env": {
         "CAL_API_TOKEN": "your-token-here"
       }
@@ -67,7 +68,7 @@ Settings → MCP → Add Server, then paste the same JSON.
 ### Local dev (clone + link)
 
 ```bash
-git clone https://github.com/homeloanexpress/cal-mcp-server.git
+git clone https://github.com/askcal/cal-mcp-server.git
 cd cal-mcp-server
 npm install
 npm run build
@@ -81,20 +82,20 @@ npm run build
 
 ### Recommended — long‑lived API key (`cal_live_…`)
 
-Sign up at [vault.homeloanexpress.ai](https://vault.homeloanexpress.ai) (request access if you don't have a key yet — broker LOs are auto‑approved). Then:
+Sign up at [api.askcal.io](https://api.askcal.io) (request access if you don't have a key yet — broker LOs are auto‑approved). Then:
 
 ```bash
 # 1. Get a short‑lived session token from /auth/login
-SESSION=$(curl -s -X POST https://vault.homeloanexpress.ai/auth/login \
+SESSION=$(curl -s -X POST https://api.askcal.io/auth/login \
   -H "Content-Type: application/json" \
-  -H "Origin: https://homeloanexpress.ai" \
+  -H "Origin: https://askcal.io" \
   -d '{"email":"<your-email>","password":"<your-password>","portal":"team"}' \
   | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
 
 # 2. Mint a long‑lived API key
-curl -X POST https://vault.homeloanexpress.ai/auth/api-keys \
+curl -X POST https://api.askcal.io/auth/api-keys \
   -H "Content-Type: application/json" \
-  -H "Origin: https://homeloanexpress.ai" \
+  -H "Origin: https://askcal.io" \
   -H "Authorization: Bearer $SESSION" \
   -d '{"label":"my-claude-desktop"}'
 ```
@@ -107,7 +108,7 @@ If you just want to try a tool call quickly, the session token from `/auth/login
 
 ### v0.2 preview
 
-OAuth 2.1 with PKCE is on the v0.2 roadmap so MCP clients can run the consent flow themselves. Until then, the API key flow above is the recommended path.
+OAuth 2.1 with PKCE is on the roadmap so MCP clients can run the consent flow themselves. Until then, the API key flow above is the recommended path.
 
 ## Verify it works
 
@@ -125,7 +126,7 @@ High‑balance HCOL county. Anything above this is a jumbo loan.
 If you don't, check:
 
 1. The token isn't expired — Cal session tokens last 24 hours by default. Refresh via `/auth/login`.
-2. Network can reach `https://vault.homeloanexpress.ai`.
+2. Network can reach `https://api.askcal.io`.
 3. Your MCP client picked up the config — restart it after editing.
 
 ## Configuration
@@ -133,11 +134,11 @@ If you don't, check:
 | Env var | Required | Default | Notes |
 |---|---|---|---|
 | `CAL_API_TOKEN` | yes | — | Bearer token from `/auth/login`. |
-| `CAL_API_BASE_URL` | no | `https://vault.homeloanexpress.ai` | Override only if you're testing against a Cal instance other than production. |
+| `CAL_API_BASE_URL` | no | `https://api.askcal.io` | Override only if you're testing against a Cal instance other than production. |
 
 ## Data scope
 
-Calls are scoped to the *list* tied to your token. If you're a broker LO with a curated approved‑lender list, results are filtered to lenders you can actually use. Cal will not leak across approved lists. The `chris-hle` demo list (the founder's list) is the broadest at 166 lenders.
+Calls are scoped to the *list* tied to your token. If you're a broker LO with a curated approved‑lender list, results are filtered to lenders you can actually use. Cal will not leak across approved lists. The founder's demo list is the broadest, at 166 lenders.
 
 ## License
 
@@ -145,20 +146,20 @@ MIT. The wrapper code is open. Cal's curated lender library, DPA program data, a
 
 ## About Cal
 
-Cal is the AI mortgage platform from [HomeLoanExpress](https://homeloanexpress.ai), built by a 17‑year industry veteran (NMLS 275073) for working brokers. Production state at this release:
+Cal is the AI mortgage platform at [askcal.io](https://askcal.io), built by a 17‑year industry veteran (NMLS 275073) for working brokers. Production state at this release:
 
 - 166 wholesale lenders, 1,424 indexed program documents, 250 DPA programs, 50 states
 - 4 LOs in pilot, 342 questions answered in the first 24 hours of soft‑launch
 - $500K committed + $1.5M soft‑committed → $2M seed target
 
-Investor preview at [vault.homeloanexpress.ai/pitch.html](https://vault.homeloanexpress.ai/pitch.html).
 
 ## Roadmap
 
-- **v0.1** *(current)* — 7 tools, API‑key auth, stdio transport, npm + GitHub.
-- **v0.2** — OAuth 2.1 with PKCE. `.dxt` Claude Desktop bundle. Optimal Blue MCP companion server.
-- **v0.3** — Streamable HTTP transport. Public agency MCPs (Fannie Selling Guide, Freddie Guide, FHA Handbook 4000.1, VA Handbook 26‑7, FHFA limits, HUD AMI) under the same org as open‑source siblings.
-- **v0.4** — Encompass MCP companion (LOS read/write). DocuSign MCP companion. The investor‑deck card 8 vision: one prompt fires across CRM + email + calendar + pricing + library.
+- **v0.1** - 7 tools, API-key auth, stdio transport, npm + GitHub.
+- **v0.2** *(current)* - ValueGuard valuation (`cal_valuation`), 8 tools total; repointed to the askcal.io API.
+- **v0.3** - OAuth 2.1 with PKCE. `.dxt` Claude Desktop bundle. Optimal Blue MCP companion server.
+- **v0.4** - Streamable HTTP transport. Public agency MCPs (Fannie Selling Guide, Freddie Guide, FHA Handbook 4000.1, VA Handbook 26-7, FHFA limits, HUD AMI).
+- **v0.5** - Encompass MCP companion (LOS read/write). DocuSign MCP companion. One prompt fires across CRM + email + calendar + pricing + library.
 
 ## Contributing
 
@@ -166,4 +167,4 @@ Issues and PRs welcome. The roadmap above is the priority order; if you want to 
 
 ## Contact
 
-Chris Black · NMLS 275073 · chris@homeloanexpress.ai · 925‑286‑7681
+Chris Black · NMLS 275073 · chris@askcal.io · 925‑286‑7681

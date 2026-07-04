@@ -51,10 +51,10 @@ export class CalClient {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.token}`,
-          // Cal's CORS layer requires an explicit Origin from approved hosts.
-          // The MCP server is server-side, so use the canonical app origin.
-          Origin: 'https://homeloanexpress.ai',
-          'User-Agent': 'cal-mcp-server/0.1.0',
+          // Cal's CORS layer reflects approved Origins.  The MCP server is
+          // server-side, so send the canonical Cal app origin.
+          Origin: 'https://askcal.io',
+          'User-Agent': 'cal-mcp-server/0.2.0',
         },
         body: JSON.stringify(input),
         signal: controller.signal,

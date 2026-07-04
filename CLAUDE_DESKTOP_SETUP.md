@@ -14,15 +14,15 @@ The instructions below cover the manual / legacy path.
 ## 1. Get a long-lived API key (recommended)
 
 ```bash
-SESSION=$(curl -s -X POST https://vault.homeloanexpress.ai/auth/login \
+SESSION=$(curl -s -X POST https://api.askcal.io/auth/login \
   -H "Content-Type: application/json" \
-  -H "Origin: https://homeloanexpress.ai" \
+  -H "Origin: https://askcal.io" \
   -d '{"email":"<your-email>","password":"<your-password>","portal":"team"}' \
   | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
 
-curl -X POST https://vault.homeloanexpress.ai/auth/api-keys \
+curl -X POST https://api.askcal.io/auth/api-keys \
   -H "Content-Type: application/json" \
-  -H "Origin: https://homeloanexpress.ai" \
+  -H "Origin: https://askcal.io" \
   -H "Authorization: Bearer $SESSION" \
   -d '{"label":"my-claude-desktop"}'
 ```
@@ -63,7 +63,7 @@ After npm publish, switch to:
   "mcpServers": {
     "cal": {
       "command": "npx",
-      "args": ["-y", "@homeloanexpress/cal-mcp-server"],
+      "args": ["-y", "@askcal/mcp-server"],
       "env": {
         "CAL_API_TOKEN": "cal_live_...your-key-here..."
       }

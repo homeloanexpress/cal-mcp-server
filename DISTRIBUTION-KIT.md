@@ -4,10 +4,10 @@ Don't ship the MCP server quietly. The wedge is the build *plus* the announcemen
 
 ## Day‑0 (launch day, ~60 minutes of human work)
 
-- [ ] Create the GitHub org `homeloanexpress` (or `homeloanexpress-ai` if taken). Add Chris as owner.
-- [ ] Push this repo to `homeloanexpress/cal-mcp-server`. Mark public, MIT license, descriptive about‑text, topics: `mcp` `model-context-protocol` `mortgage` `claude` `homeloanexpress`.
+- [ ] Create or confirm the GitHub org `askcal`. Add Chris as owner.
+- [ ] Push this repo to `askcal/cal-mcp-server`. Mark public, MIT license, descriptive about‑text, topics: `mcp` `model-context-protocol` `mortgage` `claude` `askcal`.
 - [ ] Create release `v0.1.0` with the changelog body. Attach the npm tarball.
-- [ ] Publish to npm: `npm publish --access public`. (Requires npm org `@homeloanexpress` — claim it now.)
+- [ ] Publish to npm: `npm publish --access public`. (Requires npm org `@askcal` — claim it now.)
 - [ ] Open a PR to `modelcontextprotocol/servers` adding `cal-mcp-server` to the community servers list.
 - [ ] Open a PR to `punkpeye/awesome-mcp-servers` under the `Finance` or new `Mortgage` section.
 - [ ] Post the Show HN draft (below).
@@ -34,8 +34,8 @@ Don't ship the MCP server quietly. The wedge is the build *plus* the announcemen
 >
 > v0.3 (next 8 weeks): open‑source MCP wrappers for Fannie Selling Guide, Freddie Guide, FHA Handbook 4000.1, VA Handbook 26‑7. Cal becomes the maintainer of the public mortgage MCP layer.
 >
-> Repo: https://github.com/homeloanexpress/cal-mcp-server
-> Demo: https://vault.homeloanexpress.ai
+> Repo: https://github.com/askcal/cal-mcp-server
+> Demo: https://api.askcal.io
 > Investor preview: available on request.
 >
 > Happy to answer anything about the build, the data pipeline, why mortgage is uniquely well‑suited to MCP, or what's next.
@@ -52,9 +52,9 @@ Don't ship the MCP server quietly. The wedge is the build *plus* the announcemen
 >
 > v0.1 ships today. Free. MIT licensed. Data layer is proprietary.
 >
-> If you're an LO using Claude Desktop and want it pointed at Cal: github.com/homeloanexpress/cal-mcp-server — install instructions take 60 seconds.
+> If you're an LO using Claude Desktop and want it pointed at Cal: github.com/askcal/cal-mcp-server — install instructions take 60 seconds.
 >
-> If you're an investor — what we're building, why now, and the funding ask: vault.homeloanexpress.ai/pitch.html
+> If you're an investor — what we're building, why now, and the funding ask: api.askcal.io/pitch.html
 >
 > #mortgage #mcp #ai #fintech
 
@@ -72,12 +72,12 @@ Don't ship the MCP server quietly. The wedge is the build *plus* the announcemen
 >
 > Funding context: $500K already committed, $1.5M soft‑committed toward a $2M seed.
 >
-> I can do a 15‑min demo (loom or live) showing the LO experience and the open‑source wrapper. The investor deck and live product are at vault.homeloanexpress.ai if you want context first.
+> I can do a 15‑min demo (loom or live) showing the LO experience and the open‑source wrapper. The investor deck and live product are at api.askcal.io if you want context first.
 >
 > Worth a story?
 >
 > Chris Black
-> chris@homeloanexpress.ai · 925‑286‑7681
+> chris@askcal.io · 925‑286‑7681
 > NMLS 275073
 
 ## Anthropic developer blog request
@@ -94,8 +94,8 @@ Email developer-experience@anthropic.com:
 >
 > Why I think it's worth a callout: this is a vertical where the data is gated behind broker portals, not public APIs. Every lender's matrix is a PDF; every state housing‑finance‑agency's DPA program is a different web form. Wrapping that pile as MCP took ~3 weeks of focused engineering and immediately made every MCP‑compatible client useful for working mortgage brokers — no vendor integrations required from any of the dozens of LOS / POS / pricing‑engine vendors.
 >
-> Repo: https://github.com/homeloanexpress/cal-mcp-server
-> Demo: https://vault.homeloanexpress.ai
+> Repo: https://github.com/askcal/cal-mcp-server
+> Demo: https://api.askcal.io
 >
 > Happy to write a guest post, do a podcast, or send screenshots / a 90‑second demo video if any of this is interesting for the dev‑rel narrative around vertical MCP servers.
 >
@@ -109,7 +109,7 @@ Script the recording so the wow happens in the first 15 seconds:
 2. **10–25s** — type the harder one: "Top 5 wholesale jumbo lenders in CA for a 712 FICO, 80% LTV, $1.4M loan with departing residence still listed." Show the ranked list, the AE phone number on the top result, the structuring playbook reference.
 3. **25–45s** — voice‑over: "This is what an LO would normally spend 90 minutes digging through six broker portals to answer. The library has 166 lenders, 1,400+ matrices, 250 DPA programs, refreshed weekly. The MCP wrapper is open source and MIT licensed."
 4. **45–75s** — show the GitHub repo, the install snippet, and the npm package.
-5. **75–90s** — "I'm Chris Black, 17 years in mortgage. Cal is funded with $500K committed, $1.5M soft. The deck's at vault.homeloanexpress.ai/pitch.html. Hit me up if you build on it or want to invest."
+5. **75–90s** — "I'm Chris Black, 17 years in mortgage. Cal is funded with $500K committed, $1.5M soft. The deck's at api.askcal.io/pitch.html. Hit me up if you build on it or want to invest."
 
 Record on QuickTime, no edits needed. Upload to Loom + YouTube + a permanent link in the README.
 

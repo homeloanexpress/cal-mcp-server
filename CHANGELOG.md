@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.0 - 2026-07-03
+
+Relaunch as Cal (askcal.io) + ValueGuard.
+
+- **Repointed to the Cal API.** `DEFAULT_BASE_URL` is now `https://api.askcal.io`;
+  the legacy `vault.homeloanexpress.ai` host is retired. Users who set
+  `CAL_API_BASE_URL` explicitly need no change.
+- **Rebranded** the package to `@askcal/mcp-server`. Docs, URLs, homepage, and
+  the contact address now point at askcal.io. The server-side `Origin` header
+  is the canonical Cal origin.
+- **New tool `cal_valuation`** (8 tools total): ValueGuard comparable-sales
+  valuation. Pass a subject property and 4+ comps, get an indicated market
+  value, floor/ceiling range, over/under-priced verdict, confidence, and the
+  comps used. Backed by the Cal API `valuation_report` executor.
+- No breaking changes to the seven existing tool schemas.
+
 ## 0.1.1 — 2026-05-08
 
 Long-lived API keys.

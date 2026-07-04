@@ -17,6 +17,7 @@ import { calLenderDocuments } from './cal_lender_documents.js';
 import { calDpaSearch } from './cal_dpa_search.js';
 import { calLenderIntel } from './cal_lender_intel.js';
 import { calScenarioPattern } from './cal_scenario_pattern.js';
+import { calValuation } from './cal_valuation.js';
 
 export interface CalTool {
   name: string;
@@ -33,4 +34,5 @@ export const TOOLS: CalTool[] = [
   calDpaSearch,
   calLenderIntel,
   calScenarioPattern,
+  calValuation,
 ];
