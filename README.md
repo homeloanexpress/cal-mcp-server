@@ -150,8 +150,6 @@ Cal is the AI mortgage platform at [askcal.io](https://askcal.io), built by a 17
 
 - 166 wholesale lenders, 1,424 indexed program documents, 250 DPA programs, 50 states
 - 4 LOs in pilot, 342 questions answered in the first 24 hours of soft‑launch
-- $500K committed + $1.5M soft‑committed → $2M seed target
-
 
 ## Roadmap
 
@@ -167,4 +165,4 @@ Issues and PRs welcome. The roadmap above is the priority order; if you want to 
 
 ## Contact
 
-Chris Black · NMLS 275073 · chris@askcal.io · 925‑286‑7681
+Chris Black · NMLS 275073 · chris@askcal.io
